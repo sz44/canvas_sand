@@ -1,6 +1,6 @@
-const CELL_SIZE = 25;
-const ROWS = 16;
-const COLS = 22;
+const CELL_SIZE = 15;
+const ROWS = 32;
+const COLS = 42;
 
 const canvas = document.querySelector("canvas");
 canvas.height = CELL_SIZE * ROWS;
@@ -22,8 +22,12 @@ canvas.addEventListener("mousemove", (e) => {
 });
 
 canvas.addEventListener("mousedown", (e) => {
+  let [x, y] = [e.offsetX, e.offsetY];
+  mouse.x = x;
+  mouse.y = y;
   mouseDown = true;
 });
+
 window.addEventListener("mouseup", (e) => {
   mouseDown = false;
 });
@@ -53,7 +57,7 @@ const Game = {
   }
 }
 
-let speed = 100;
+let speed = 50;
 let lastRun = 0;
 function loop() {
   if (mouseDown && mouse.y >= 0 && mouse.y < canvas.height) {
