@@ -1,6 +1,6 @@
-const CELL_SIZE = 55;
-const ROWS = 10;
-const COLS = 12;
+const CELL_SIZE = 35;
+const ROWS = 16;
+const COLS = 22;
 
 const canvas = document.querySelector("canvas");
 canvas.height = CELL_SIZE * ROWS;
@@ -9,25 +9,36 @@ const ctx = canvas.getContext("2d");
 
 let Grid = makeGrid();
 let empty = "#292929";
-let filled = "#ff0000";
+let filled = "#0fe2e2";
 
-canvas.addEventListener("click", (e) => {
+let mouseDown = false;
+
+canvas.addEventListener("mousemove", (e) => {
+  if (mouseDown) {
+    let [x, y] = [e.offsetX, e.offsetY];
+    let row = Math.floor(y / CELL_SIZE);
+    let col = Math.floor(x / CELL_SIZE);
+    Grid[row][col] = 1;
+  }
+});
+
+canvas.addEventListener("mousedown", (e) => {
   let [x, y] = [e.offsetX, e.offsetY];
-  console.log(x, y);
   let row = Math.floor(y / CELL_SIZE);
   let col = Math.floor(x / CELL_SIZE);
-  console.log(row, col);
   Grid[row][col] = 1;
-  console.log(Grid);
+  mouseDown = true;
+});
+canvas.addEventListener("mouseup", (e) => {
+  mouseDown = false;
 });
 
 const Game = {
-  cells: [],
   update() {
-    for (let row in Grid) {
-      for (let col in Grid[0]) {
-        if (Grid[row][col] == 1) {
-          
+    for (let y = ROWS - 1; y >= 0; y--) {
+      for (let x = COLS - 1; x >= 0; x--) {
+        if (Grid[y][x] === 1 && y < ROWS - 1 && Grid[y + 1][x] === 0) {
+          [Grid[y][x], Grid[y + 1][x]] = [Grid[y + 1][x], Grid[y][x]];
         }
       }
     }
@@ -47,16 +58,21 @@ const Game = {
   }
 }
 
+let speed = 10;
+let lastRun = 0;
 function loop() {
-  Game.update()
-  Game.draw()
+  if (Date.now() - lastRun > speed) {
+    Game.draw()
+    Game.update()
+    lastRun = Date.now();
+  }
   requestAnimationFrame(loop);
 }
 loop()
 
 function makeGrid() {
   let grid = [];
-  for (let i = 0; i<ROWS; i++) {
+  for (let i = 0; i < ROWS; i++) {
     let row = [];
     for (let j = 0; j < COLS; j++) {
       row.push(0);
