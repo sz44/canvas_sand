@@ -1,4 +1,4 @@
-const CELL_SIZE = 35;
+const CELL_SIZE = 25;
 const ROWS = 16;
 const COLS = 22;
 
@@ -24,7 +24,7 @@ canvas.addEventListener("mousemove", (e) => {
 canvas.addEventListener("mousedown", (e) => {
   mouseDown = true;
 });
-canvas.addEventListener("mouseup", (e) => {
+window.addEventListener("mouseup", (e) => {
   mouseDown = false;
 });
 
@@ -56,7 +56,7 @@ const Game = {
 let speed = 100;
 let lastRun = 0;
 function loop() {
-  if (mouseDown) {
+  if (mouseDown && mouse.y >= 0 && mouse.y < canvas.height) {
     let row = Math.floor(mouse.y / CELL_SIZE);
     let col = Math.floor(mouse.x / CELL_SIZE);
     Grid[row][col] = 1;
