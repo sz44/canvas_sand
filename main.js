@@ -9,24 +9,19 @@ const ctx = canvas.getContext("2d");
 
 let Grid = makeGrid();
 let empty = "#292929";
-let filled = "#0fe2e2";
+let filled = "#214f6c";
+
+let mouse = {x: 0, y: 0}
 
 let mouseDown = false;
 
 canvas.addEventListener("mousemove", (e) => {
-  if (mouseDown) {
-    let [x, y] = [e.offsetX, e.offsetY];
-    let row = Math.floor(y / CELL_SIZE);
-    let col = Math.floor(x / CELL_SIZE);
-    Grid[row][col] = 1;
-  }
+  let [x, y] = [e.offsetX, e.offsetY];
+  mouse.x = x;
+  mouse.y = y;
 });
 
 canvas.addEventListener("mousedown", (e) => {
-  let [x, y] = [e.offsetX, e.offsetY];
-  let row = Math.floor(y / CELL_SIZE);
-  let col = Math.floor(x / CELL_SIZE);
-  Grid[row][col] = 1;
   mouseDown = true;
 });
 canvas.addEventListener("mouseup", (e) => {
@@ -58,11 +53,16 @@ const Game = {
   }
 }
 
-let speed = 10;
+let speed = 100;
 let lastRun = 0;
 function loop() {
+  if (mouseDown) {
+    let row = Math.floor(mouse.y / CELL_SIZE);
+    let col = Math.floor(mouse.x / CELL_SIZE);
+    Grid[row][col] = 1;
+  }
+  Game.draw()
   if (Date.now() - lastRun > speed) {
-    Game.draw()
     Game.update()
     lastRun = Date.now();
   }
