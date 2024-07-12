@@ -36,9 +36,19 @@ const Game = {
   update() {
     for (let y = ROWS - 1; y >= 0; y--) {
       for (let x = COLS - 1; x >= 0; x--) {
-        if (Grid[y][x] === 1 && y < ROWS - 1 && Grid[y + 1][x] === 0) {
-          [Grid[y][x], Grid[y + 1][x]] = [Grid[y + 1][x], Grid[y][x]];
-        }
+        if (Grid[y][x] === 1 && y < ROWS - 1) {
+          if (Grid[y + 1][x] === 0) {
+            [Grid[y][x], Grid[y + 1][x]] = [Grid[y + 1][x], Grid[y][x]];
+          } else {
+            let dir = Math.round(Math.random(1) * 2) - 1
+            if (dir === -1 && x > 0 && Grid[y][x-1] === 0) {
+              [Grid[y][x], Grid[y][x - 1]] = [Grid[y][x - 1], Grid[y][x]];
+            }
+            if (dir === 1 && x < COLS - 1 && Grid[y][x + 1] === 0) {
+              [Grid[y][x], Grid[y][x + 1]] = [Grid[y][x + 1], Grid[y][x]];
+            }
+          }
+        } 
       }
     }
   },
