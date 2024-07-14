@@ -14,7 +14,7 @@ let velGrid = makeGrid();
 let empty = "#292929";
 let filled = "#214f6c";
 
-let mouse = {x: 0, y: 0}
+let mouse = { x: 0, y: 0 };
 
 let mouseDown = false;
 
@@ -37,54 +37,55 @@ window.addEventListener("mouseup", (e) => {
 
 const Game = {
   update() {
-    // if above last Row and nothing below or the one below has vel > 0 -> move down
     let nextGrid = makeGrid();
     let nextVelGrid = makeGrid();
     for (let y = ROWS - 1; y >= 0; y--) {
       for (let x = COLS - 1; x >= 0; x--) {
         if (Grid[y][x] === 1) {
           if (y < ROWS - 1 && (Grid[y + 1][x] === 0 || velGrid[y + 1][x] === 1)) {
-              nextGrid[y + 1][x] = 1;
-              // decide if to set vel to zero
-               
-              if (y + 1 === ROWS - 1 || (nextGrid[y+2][x] === 1 && nextVelGrid[y+2][x] === 0)) {
-                nextVelGrid[y + 1][x] = 0;
+            nextGrid[y + 1][x] = 1;
+
+            // decide how to set vel
+            if (y + 1 === ROWS - 1 || (nextGrid[y + 2][x] === 1 && nextVelGrid[y + 2][x] === 0)) {
+              nextVelGrid[y + 1][x] = 0;
+            } else {
+              nextVelGrid[y + 1][x] = 1;
+            }
+          } else if (y < ROWS - 1 && Grid[y + 1][x] === 1 && velGrid[y + 1][x] === 0) {
+            // let dir = Math.sign(Math.random(1) - 0.5);
+
+            // first try left, if not possible try right
+            if (x > 0 && (Grid[y + 1][x - 1] === 0 || velGrid[y + 1][x - 1] === 1)) {
+              nextGrid[y + 1][x - 1] = 1;
+              console.log("setting low left: ", y + 1, x - 1);
+              // decide how to set vel
+              if (y + 1 === ROWS - 1 || (nextGrid[y + 2][x - 1] === 1 && nextVelGrid[y + 2][x - 1] === 0)) {
+                nextVelGrid[y + 1][x - 1] = 0;
               } else {
-                nextVelGrid[y + 1][x] = 1;
+                nextVelGrid[y + 1][x - 1] = 1;
               }
-          } else {
+            } else if (x < COLS - 1 && (Grid[y+1][x+1] === 0 || velGrid[y+1][x+1] === 1)){
+              nextGrid[y + 1][x + 1] = 1;
+              console.log("setting low right: ", y + 1, x + 1);
+              // decide how to set vel
+              if (y + 1 === ROWS - 1 || (nextGrid[y + 2][x + 1] === 1 && nextVelGrid[y + 2][x + 1] === 0)) {
+                nextVelGrid[y + 1][x + 1] = 0;
+              } else {
+                nextVelGrid[y + 1][x + 1] = 1;
+              }
+            } else {
               nextGrid[y][x] = 1;
               nextVelGrid[y][x] = 0;
+            }
+
+          } else {
+
+            nextGrid[y][x] = 1;
+            nextVelGrid[y][x] = 0;
           }
         }
       }
     }
-    // for (let y = 0; y < ROWS; y++) {
-    //   for (let x = 0; x < COLS; x++) {
-    //     if (Grid[y][x] === 1) {
-    //       if (y < ROWS - 1 && (Grid[y + 1][x] === 0 || velGrid[y + 1][x] === 1)) {
-    //           // console.log("y < ROWS - 1: ", y, x)
-    //           nextGrid[y + 1][x] = 1;
-    //           if (y + 1 === ROWS - 1 || (Grid[y+1][x] === 1 && velGrid[y+1][x] === 0)) {
-    //             nextVelGrid[y + 1][x] = 0;
-    //           } else {
-    //             nextVelGrid[y + 1][x] = 1;
-    //           }
-    //           // velGrid[y + 1][x] = 1;
-    //       } else {
-    //           // when to stop?
-    //           // if at last row y == ROWS - 1
-    //           // if there is sq below and its stopped. y + 1 grid === 1 and velGrid === 0
-    //           // console.log("last row: ", y, x)
-    //           // console.log(Grid);
-    //           // console.log(velGrid);
-    //           nextGrid[y][x] = 1;
-    //           nextVelGrid[y][x] = 0;
-    //           // velGrid[y][x] = 0;
-    //       }
-    //     }
-    //   }
-    // }
     Grid = nextGrid;
     velGrid = nextVelGrid;
   },
