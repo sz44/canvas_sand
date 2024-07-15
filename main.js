@@ -42,7 +42,13 @@ const Game = {
     for (let y = ROWS - 1; y >= 0; y--) {
       for (let x = COLS - 1; x >= 0; x--) {
         if (Grid[y][x] === 1) {
+          if (y === 40 && x === 1) {
+            console.log("y: ", y, "x: ", x);
+          }
           if (y < ROWS - 1 && (Grid[y + 1][x] === 0 || velGrid[y + 1][x] === 1)) {
+            if (y === 40 && x === 1) {
+              console.log("in first if");
+            }
             nextGrid[y + 1][x] = 1;
 
             // decide how to set vel
@@ -54,10 +60,9 @@ const Game = {
           } else if (y < ROWS - 1 && Grid[y + 1][x] === 1 && velGrid[y + 1][x] === 0) {
             let dir = Math.sign(Math.random(1) - 0.5);
 
-            // first try left, if not possible try right
             if (x > 0 && (Grid[y + 1][x + dir] === 0 || velGrid[y + 1][x + dir] === 1)) {
               nextGrid[y + 1][x + dir] = 1;
-              console.log("setting low left: ", y + 1, x + dir);
+              console.log("sliding down to: ", y + 1, x + dir);
               // decide how to set vel
               if (y + 1 === ROWS - 1 || (nextGrid[y + 2][x + dir] === 1 && nextVelGrid[y + 2][x + dir] === 0)) {
                 nextVelGrid[y + 1][x + dir] = 0;
@@ -70,6 +75,7 @@ const Game = {
             }
 
           } else {
+            // reason for falling bug was that here nextGrid is set not Grid, so new inserted squares kept vel 1
             nextGrid[y][x] = 1;
             nextVelGrid[y][x] = 0;
           }
@@ -99,13 +105,17 @@ let fps = 10;
 let frameTime = 1000 / fps;
 let lastRun = 0;
 function loop() {
+  requestAnimationFrame(loop);
   if (mouseDown && mouse.y >= 0 && mouse.y < canvas.height) {
     let row = Math.floor(mouse.y / CELL_SIZE);
     let col = Math.floor(mouse.x / CELL_SIZE);
-    // quick fix for bug where squares above get deleted.
+    // don't change vel if cell already filled to avoid falling above
     if (Grid[row][col] === 0) {
+      console.log("inserted at:", row, col);
       Grid[row][col] = 1;
       velGrid[row][col] = 1;
+    } else {
+      Grid[row][col] = 1;
     }
   }
   Game.draw();
@@ -114,7 +124,6 @@ function loop() {
     Game.update()
     lastRun = Date.now() - (elapsed % frameTime);
   }
-  requestAnimationFrame(loop);
 }
 loop()
 
