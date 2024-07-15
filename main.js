@@ -1,6 +1,6 @@
-const CELL_SIZE = 15;
-const ROWS = 32;
-const COLS = 42;
+const CELL_SIZE = 10;
+const ROWS = 42;
+const COLS = 52;
 
 const INIT_VEL = 1;
 
@@ -70,7 +70,6 @@ const Game = {
             }
 
           } else {
-
             nextGrid[y][x] = 1;
             nextVelGrid[y][x] = 0;
           }
@@ -80,14 +79,7 @@ const Game = {
     Grid = nextGrid;
     velGrid = nextVelGrid;
   },
-  // let dir = Math.round(Math.random(1) * 2) - 1
-  // let dir = -1;
-  // if (dir === -1 && x > 0 && Grid[y][x-1] === 0) {
-  //   nextGrid[y][x-1] = 1;
-  // }
-  // if (dir === 1 && x < COLS - 1 && Grid[y][x + 1] === 0) {
-  //   nextGrid[y][x+1] = 1;
-  // }
+
   draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     for (let y in Grid) {
@@ -103,7 +95,8 @@ const Game = {
   }
 }
 
-let speed = 200;
+let fps = 10;
+let frameTime = 1000 / fps;
 let lastRun = 0;
 function loop() {
   if (mouseDown && mouse.y >= 0 && mouse.y < canvas.height) {
@@ -113,9 +106,10 @@ function loop() {
     velGrid[row][col] = 1;
   }
   Game.draw();
-  if (Date.now() - lastRun > speed) {
+  let elapsed = Date.now() - lastRun;
+  if (elapsed > frameTime) {
     Game.update()
-    lastRun = Date.now();
+    lastRun = Date.now() - (elapsed % frameTime);
   }
   requestAnimationFrame(loop);
 }
@@ -131,20 +125,4 @@ function makeGrid() {
     grid.push(row);
   }
   return grid;
-}
-
-class Cell {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.vel = 1;
-    this.color = "#ff0000";
-  }
-  update() {
-    this.y += this.vel;
-  }
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, CELL_SIZE, CELL_SIZE);
-  }
 }
