@@ -45,41 +45,60 @@ const Game = {
           if (y === 40 && x === 1) {
             console.log("y: ", y, "x: ", x);
           }
-          if (y < ROWS - 1 && (Grid[y + 1][x] === 0 || velGrid[y + 1][x] === 1)) {
-            if (y === 40 && x === 1) {
-              console.log("in first if");
-            }
-            nextGrid[y + 1][x] = 1;
-
-            // decide how to set vel
-            if (y + 1 === ROWS - 1 || (nextGrid[y + 2][x] === 1 && nextVelGrid[y + 2][x] === 0)) {
-              nextVelGrid[y + 1][x] = 0;
-            } else {
-              nextVelGrid[y + 1][x] = 1;
-            }
-          } else if (y < ROWS - 1 && Grid[y + 1][x] === 1 && velGrid[y + 1][x] === 0) {
-            let dir = Math.sign(Math.random(1) - 0.5);
-
-            if (x > 0 && (Grid[y + 1][x + dir] === 0 || velGrid[y + 1][x + dir] === 1)) {
-              nextGrid[y + 1][x + dir] = 1;
-              console.log("sliding down to: ", y + 1, x + dir);
-              // decide how to set vel
-              if (y + 1 === ROWS - 1 || (nextGrid[y + 2][x + dir] === 1 && nextVelGrid[y + 2][x + dir] === 0)) {
-                nextVelGrid[y + 1][x + dir] = 0;
-              } else {
-                nextVelGrid[y + 1][x + dir] = 1;
-              }
-            } else {
-              nextGrid[y][x] = 1;
-              nextVelGrid[y][x] = 0;
-            }
-
-          } else {
-            // reason for falling bug was that here nextGrid is set not Grid, so new inserted squares kept vel 1
+          // check below
+          // check below left | right
+          if (y === ROWS - 1) {
             nextGrid[y][x] = 1;
-            nextVelGrid[y][x] = 0;
+          } else if (Grid[y + 1][x] === 0) {
+            nextGrid[y + 1][x] = 1;
+          } else if (Grid[y+1][x] === 1) {
+            let dir = Math.sign(Math.random(1) - 0.5);
+            if (dir < 0 && x > 0 && Grid[y+1][x + dir] === 0) {
+              nextGrid[y + 1][x + dir] = 1;
+            }
+            else if (dir > 0 && x < COLS - 1 && Grid[y+1][x + dir] === 0) {
+              nextGrid[y + 1][x + dir] = 1;
+            }
+            else {
+              nextGrid[y][x] = 1;
+            }
           }
         }
+        //   if (y < ROWS - 1 && (Grid[y + 1][x] === 0 )) {
+        //     if (y === 40 && x === 1) {
+        //       console.log("in first if");
+        //     }
+        //     nextGrid[y + 1][x] = 1;
+
+        //     // decide how to set vel
+        //     if (y + 1 === ROWS - 1 || (nextGrid[y + 2][x] === 1 && nextVelGrid[y + 2][x] === 0)) {
+        //       nextVelGrid[y + 1][x] = 0;
+        //     } else {
+        //       nextVelGrid[y + 1][x] = 1;
+        //     }
+        //   } else if (y < ROWS - 1 && Grid[y + 1][x] === 1 && velGrid[y + 1][x] === 0) {
+        //     let dir = Math.sign(Math.random(1) - 0.5);
+
+        //     if (x > 0 && (Grid[y + 1][x + dir] === 0 || velGrid[y + 1][x + dir] === 1)) {
+        //       nextGrid[y + 1][x + dir] = 1;
+        //       console.log("sliding down to: ", y + 1, x + dir);
+        //       // decide how to set vel
+        //       if (y + 1 === ROWS - 1 || (nextGrid[y + 2][x + dir] === 1 && nextVelGrid[y + 2][x + dir] === 0)) {
+        //         nextVelGrid[y + 1][x + dir] = 0;
+        //       } else {
+        //         nextVelGrid[y + 1][x + dir] = 1;
+        //       }
+        //     } else {
+        //       nextGrid[y][x] = 1;
+        //       nextVelGrid[y][x] = 0;
+        //     }
+
+        //   } else {
+        //     // reason for falling bug was that here nextGrid is set not Grid, so new inserted squares kept vel 1
+        //     nextGrid[y][x] = 1;
+        //     nextVelGrid[y][x] = 0;
+        //   }
+        // }
       }
     }
     Grid = nextGrid;
