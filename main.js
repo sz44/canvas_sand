@@ -102,8 +102,11 @@ function loop() {
   if (mouseDown && mouse.y >= 0 && mouse.y < canvas.height) {
     let row = Math.floor(mouse.y / CELL_SIZE);
     let col = Math.floor(mouse.x / CELL_SIZE);
-    Grid[row][col] = 1;
-    velGrid[row][col] = 1;
+    // quick fix for bug where squares above get deleted.
+    if (Grid[row][col] === 0) {
+      Grid[row][col] = 1;
+      velGrid[row][col] = 1;
+    }
   }
   Game.draw();
   let elapsed = Date.now() - lastRun;
