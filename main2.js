@@ -1,14 +1,13 @@
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
-const size = 10;
-const fps = 10;
+const size = 5;
+const fps = 60;
 const width = 800;
 const height = 600;
 canvas.width = width;
 canvas.height = height;
 
 const colors = ["#292929", "#e1bf92", "#e7c496", "#eccca2", "#f2d2a9", "#f6d7b0"];
-let color = 1;
 
 const grid = Array(Math.floor(height / size)).fill(null)
   .map(() => Array(Math.floor(width / size)).fill(0));
@@ -21,7 +20,9 @@ function createSand(x, y) {
   const gridX = Math.floor(x / size);
   const gridY = Math.floor(y / size);
   if (gridY >= 0 && gridY < grid.length && gridX >= 0 && gridX < grid[0].length) {
-    grid[gridY][gridX] = color;
+    // random 1-5
+    let r = Math.floor(Math.random() * (colors.length - 1)) + 1;
+    grid[gridY][gridX] = r;
   }
 }
 
@@ -57,13 +58,6 @@ function updateSand() {
           grid[y + 1][x - dir] = grid[y][x];
           grid[y][x] = 0;
         }
-        // } else if (dir > 0 && y + 1 < grid.length && x - 1 >= 0 && grid[y + 1][x - 1] === 0) {
-        //   grid[y + 1][x - 1] = grid[y][x];
-        //   grid[y][x] = 0;
-        // } else if (y + 1 < grid.length && x + 1 < grid[y].length && grid[y + 1][x + 1] === 0) {
-        //   grid[y + 1][x + 1] = grid[y][x];
-        //   grid[y][x] = 0;
-        // }
       }
     }
   }
@@ -73,8 +67,10 @@ function draw() {
   ctx.clearRect(0, 0, width, height);
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
-      ctx.fillStyle = colors[grid[y][x]];
-      ctx.fillRect(x * size, y * size, size, size);
+      if (grid[y][x] !== 0) {
+        ctx.fillStyle = colors[grid[y][x]];
+        ctx.fillRect(x * size, y * size, size, size);
+      }
     }
   }
 }
@@ -90,8 +86,6 @@ function gameLoop(time) {
   lastRun = time;
   if (isMousePressed) {
     createSand(mouseX, mouseY);
-    color = color === colors.length - 1 ? 1 : color + 1;
-    // color = (++color % (colors.length - 1)) + 1;
   }
   draw();
   updateSand();
