@@ -2,8 +2,6 @@ const CELL_SIZE = 15;
 const ROWS = 42;
 const COLS = 52;
 
-const INIT_VEL = 1;
-
 const canvas = document.querySelector("canvas");
 canvas.height = CELL_SIZE * ROWS;
 canvas.width = CELL_SIZE * COLS;
@@ -14,6 +12,7 @@ let velGrid = makeGrid();
 let empty = "#292929";
 let filled = "#214f6c";
 let filled2 = "#3b6d22";
+let filled3 = "#6c5321";
 
 let mouse = { x: 0, y: 0 };
 
@@ -40,7 +39,7 @@ const Game = {
   update() {
     let nextGrid = makeGrid();
     let nextVelGrid = makeGrid();
-    for (let y = ROWS - 1; y >= 0; y--) {
+    for (let y = ROWS - 1; y >= 0; y--) { 
       for (let x = COLS - 1; x >= 0; x--) {
         if (Grid[y][x] > 0) {
           if (y === 39 && x === 1) {
@@ -103,8 +102,10 @@ const Game = {
           ctx.fillStyle = empty;
         } else if (Grid[y][x] == 1){
           ctx.fillStyle = filled;
-        } else {
+        } else if (Grid[y][x] == 2) {
           ctx.fillStyle = filled2;
+        }else if (Grid[y][x] == 3) {
+          ctx.fillStyle = filled3;
         }
         ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
       }
@@ -129,10 +130,10 @@ function loop() {
         console.log("color:", color);
         Grid[row][col] = color;
         velGrid[row][col] = 1;
-        color = (color++ % 2) + 1
+        color = (color++ % 3) + 1
       } else {
         Grid[row][col] = color;
-        color = (color++ % 2) + 1
+        color = (color++ % 3) + 1
       }
     }
     Game.draw();
