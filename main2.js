@@ -8,6 +8,8 @@ canvas.width = width;
 canvas.height = height;
 
 const colors = ["#292929", "#e1bf92", "#e7c496", "#eccca2", "#f2d2a9", "#f6d7b0"];
+// const colors = ['#292929', '#FFD700', '#FFA500', '#FF4500', '#FF6347', '#FF69B4'];
+// const colors = ['#292929', '#ab946b', '#baa684', '#897869', '#b6aea6', '#9a8c7a'];
 
 const grid = Array(Math.floor(height / size)).fill(null)
   .map(() => Array(Math.floor(width / size)).fill(0));
